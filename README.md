@@ -15,6 +15,9 @@ Execution:
 
 <h2> Some simple actions that can make your development easier </h2>
 
-* <h3> Main program </h3>
-    * The main data flow is in the chain_reaction.cpp.
-    * ![why](https://gitlab.com/tzuyangw/chain-reaction-framework/blob/master/image/002.png)
+<h3> Main program </h3>
+
+*  The main data flow is in the chain_reaction.cpp. The following three lines of code are used to declare the variable<br></br>
+board, red player and blue player.<br></br>
+
+![test](https://gitlab.com/tzuyangw/chain-reaction-framework/blob/master/images/002.png)
