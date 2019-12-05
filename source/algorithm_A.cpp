@@ -40,11 +40,11 @@ void algorithm_A(Board board, Player player, int index[]){
     int color = player.get_color();
     
     while(1){
-        row = rand() & 5;
-        col = rand() & 6;
+        row = rand() % 5;
+        col = rand() % 6;
         if(board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
     }
 
     index[0] = row;
     index[1] = col;
-}
+}s
