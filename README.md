@@ -1,6 +1,8 @@
 # Chain Reaction Framework
 
-#h1 A very simple framework of chain reaction using C++ language.
+Readme url: 
+
+<h1> A very simple framework of chain reaction using C++ language. </h1>
 
 Apply the knowledge learned form the course of data structure and implement a competitive algorithm for the Critical Mass game.
 
