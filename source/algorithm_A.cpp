@@ -5,6 +5,9 @@
 
 using namespace std;
 
+#define CANNOT_PUT -20000
+#define LOSE -10000
+#define WIN 10000
 /******************************************************
  * In your algorithm, you can just use the the funcitons
  * listed by TA to get the board information.(functions 
@@ -27,12 +30,50 @@ using namespace std;
 
 
 void algorithm_A(Board board, Player player, int index[]){
-
+    char player_color = player.get_color();
+    char opponent_color;
+    int playerboard_num[5][6];
+    char playerboard_color[5][6];
+    int playerboard_capacity[5][6];
+    int best_score = LOSE;
+    int best_move_row = 0;
+    int best_move_col = 0;
     // cout << board.get_capacity(0, 0) << endl;
     // cout << board.get_orbs_num(0, 0) << endl;
     // cout << board.get_cell_color(0, 0) << endl;
     // board.print_current_board(0, 0, 0);
 
+    //////////// Superficial Algorithm //////////
+    if (player_color = 'r')
+        opponent_color = 'b';
+    else opponent_color = 'r';
+
+    for (int row = 0; row < 5; row++) {
+        for (int col = 0; col < 6; col++) {
+            playerboard_capacity[row][col] = board.get_capacity(row, col);
+            playerboard_num[row][col] = board.get_orbs_num(row, col);
+            playerboard_color[row][col] = board.get_cell_color(row, col);
+        }
+    }
+    for (int row = 0; row < 5; row++) {
+        for (int col = 0; col < 6; col++) {
+            int score;
+            if (playerboard_color[row][col] != opponent_color) {
+                score = -playerboard_num[row][col];
+                score = score - playerboard_capacity[row][col];
+            }
+            else score = CANNOT_PUT;
+            if (score > best_score) {
+                best_score = score;
+                best_move_row = row;
+                best_move_col = col;
+            }
+        }
+    }
+            
+    index[0] = best_move_row;
+    index[1] = best_move_col;
+    /*
     //////////// Random Algorithm ////////////
     // Here is the random algorithm for your reference, you can delete or comment it.
     srand(time(NULL));
@@ -44,7 +85,8 @@ void algorithm_A(Board board, Player player, int index[]){
         col = rand() % 6;
         if(board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
     }
-
+    
     index[0] = row;
     index[1] = col;
-}s
+    */
+}
