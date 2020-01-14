@@ -27,14 +27,21 @@ using namespace std;
  * 3. The function that return the color fo the cell(row, col)
  * 4. The function that print out the current board statement
 *************************************************************************/
-
+bool legal_coor (int row, int col) {
+    if (row >= 0 && row < 5 && col >= 0 && col < 6)
+        return true;
+    else return false; 
+}
+int is_critical (Board board, int row, int col) {
+    return (board.get_capacity(row, col) - board.get_orbs_num(row, col) <= 1);
+}
 
 void algorithm_A(Board board, Player player, int index[]){
     char player_color = player.get_color();
     char opponent_color;
-    int playerboard_num[5][6];
-    char playerboard_color[5][6];
-    int playerboard_capacity[5][6];
+    int board_num[5][6];
+    char board_color[5][6];
+    int board_capacity[5][6];
     int best_score = LOSE;
     int best_move_row = 0;
     int best_move_col = 0;
@@ -50,17 +57,46 @@ void algorithm_A(Board board, Player player, int index[]){
 
     for (int row = 0; row < 5; row++) {
         for (int col = 0; col < 6; col++) {
-            playerboard_capacity[row][col] = board.get_capacity(row, col);
-            playerboard_num[row][col] = board.get_orbs_num(row, col);
-            playerboard_color[row][col] = board.get_cell_color(row, col);
+            board_capacity[row][col] = board.get_capacity(row, col);
+            board_num[row][col] = board.get_orbs_num(row, col);
+            board_color[row][col] = board.get_cell_color(row, col);
         }
     }
     for (int row = 0; row < 5; row++) {
         for (int col = 0; col < 6; col++) {
-            int score;
-            if (playerboard_color[row][col] != opponent_color) {
-                score = -playerboard_num[row][col];
-                score = score - playerboard_capacity[row][col];
+            int score = 0;
+            if (board_color[row][col] != opponent_color) {
+                // consider itself
+                score = board_num[row][col];
+                score = score - board_capacity[row][col];
+                // consider adjacency
+                if (is_critical(board, row, col))
+                    if (legal_coor(row - 1, col) && is_critical(board, row - 1, col)) { // up
+                        score = score + 5;
+                    }
+                    if (legal_coor(row + 1, col) && is_critical(board, row + 1, col)){ // down
+                        score = score + 5;
+                    }
+                    if (legal_coor(row, col - 1) && is_critical(board, row, col - 1)){  // left
+                        score = score + 5;
+                    }
+                    if (legal_coor(row, col + 1) && is_critical(board, row, col + 1)){  // right
+                        score = score + 5;
+                    }
+                else {
+                    if (legal_coor(row - 1, col) && is_critical(board, row - 1, col)) { // up
+                        score = score - 5;
+                    }
+                    if (legal_coor(row + 1, col) && is_critical(board, row + 1, col)){ // down
+                        score = score - 5;
+                    }
+                    if (legal_coor(row, col - 1) && is_critical(board, row, col - 1)){  // left
+                        score = score - 5;
+                    }
+                    if (legal_coor(row, col + 1) && is_critical(board, row, col + 1)){  // right
+                        score = score - 5;
+                    }
+                }
             }
             else score = CANNOT_PUT;
             if (score > best_score) {
