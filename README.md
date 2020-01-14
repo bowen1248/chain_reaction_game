@@ -42,4 +42,4 @@ Apply the knowledge learned form the course of data structure and implement a co
 
 ### Something you might want to know
 
-*  system("pause")
+*  system("pause")# chain_reaction_game
