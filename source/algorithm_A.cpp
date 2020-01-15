@@ -5,8 +5,8 @@
 
 using namespace std;
 
-#define CANNOT_PUT -20000
-#define MIN -10000
+#define CANNOT_PUT -200000
+#define MIN -100000
 // Check if input coordinate is valid
 bool legal_coor (int row, int col) {
     if (row >= 0 && row < 5 && col >= 0 && col < 6)
@@ -31,7 +31,7 @@ void algorithm_A(Board board, Player player, int index[]){
     int best_move_col = 0;
 
     // get player's color
-    if (player_color = 'r')
+    if (player_color == 'r')
         opponent_color = 'b';
     else opponent_color = 'r';
 
@@ -49,7 +49,7 @@ void algorithm_A(Board board, Player player, int index[]){
         for (int col = 0; col < 6; col++) {
             int score = 0;
             // if no opponent on tile
-            if (board_color[row][col] != opponent_color) {
+            if (board.get_cell_color(row, col) != opponent_color) {
                 // consider itself
                 // consider number of orb on that cell
                 score = board_num[row][col];
@@ -63,19 +63,19 @@ void algorithm_A(Board board, Player player, int index[]){
                 if (!is_critical(board, row, col)) {
                     // if adjacency block have opponent cell is at critical
                     // give this cell lower score
-                    if (legal_coor(row - 1, col) && board_color[row - 1][col]
+                    if (legal_coor(row - 1, col) && board_color[row - 1][col] == opponent_color
                         && is_critical(board, row - 1, col)) { // up
                         score = score - (20 - board_num[row - 1][col] * 5);
                     }
-                    if (legal_coor(row + 1, col) && board_color[row + 1][col]
+                    if (legal_coor(row + 1, col) && board_color[row + 1][col] == opponent_color
                         && is_critical(board, row + 1, col)) { // down
                         score = score - (20 - board_num[row + 1][col] * 5);
                     }
-                    if (legal_coor(row, col - 1) && board_color[row][col - 1]
+                    if (legal_coor(row, col - 1) && board_color[row][col - 1] == opponent_color
                         && is_critical(board, row, col - 1)) {  // left
                         score = score - (20 - board_num[row][col - 1] * 5);
                     }
-                    if (legal_coor(row, col + 1) && board_color[row][col + 1]
+                    if (legal_coor(row, col + 1) && board_color[row][col + 1] == opponent_color
                         && is_critical(board, row, col + 1)) {  // right
                         score = score - (20 - board_num[row][col + 1] * 5);
                     }
