@@ -6,8 +6,7 @@
 using namespace std;
 
 #define CANNOT_PUT -20000
-#define LOSE -10000
-#define WIN 10000
+#define MIN -10000
 /******************************************************
  * In your algorithm, you can just use the the funcitons
  * listed by TA to get the board information.(functions 
@@ -32,7 +31,7 @@ bool legal_coor (int row, int col) {
         return true;
     else return false; 
 }
-int is_critical (Board board, int row, int col) {
+bool is_critical (Board board, int row, int col) {
     return (board.get_capacity(row, col) - board.get_orbs_num(row, col) <= 1);
 }
 
@@ -42,7 +41,7 @@ void algorithm_A(Board board, Player player, int index[]){
     int board_num[5][6];
     char board_color[5][6];
     int board_capacity[5][6];
-    int best_score = LOSE;
+    int best_score = MIN;
     int best_move_row = 0;
     int best_move_col = 0;
     // cout << board.get_capacity(0, 0) << endl;
@@ -68,33 +67,62 @@ void algorithm_A(Board board, Player player, int index[]){
             if (board_color[row][col] != opponent_color) {
                 // consider itself
                 score = board_num[row][col];
-                score = score - board_capacity[row][col];
+                if (board_capacity[row][col] == 2)
+                    score = score + 3;
+                else if (board_capacity[row][col] == 3)
+                    score = score + 2;
                 // consider adjacency
-                if (is_critical(board, row, col))
-                    if (legal_coor(row - 1, col) && is_critical(board, row - 1, col)) { // up
-                        score = score + 5;
+                    // if adjacency have enemy orb
+                if (!is_critical(board, row, col)) {
+                    if (legal_coor(row - 1, col) && board_color[row - 1][col]
+                        && is_critical(board, row - 1, col)) { // up
+                        score = score - (20 - board_num[row - 1][col] * 5);
                     }
-                    if (legal_coor(row + 1, col) && is_critical(board, row + 1, col)){ // down
-                        score = score + 5;
+                    if (legal_coor(row + 1, col) && board_color[row + 1][col]
+                        && is_critical(board, row + 1, col)) { // down
+                        score = score - (20 - board_num[row + 1][col] * 5);
                     }
-                    if (legal_coor(row, col - 1) && is_critical(board, row, col - 1)){  // left
-                        score = score + 5;
+                    if (legal_coor(row, col - 1) && board_color[row][col - 1]
+                        && is_critical(board, row, col - 1)) {  // left
+                        score = score - (20 - board_num[row][col - 1] * 5);
                     }
-                    if (legal_coor(row, col + 1) && is_critical(board, row, col + 1)){  // right
-                        score = score + 5;
+                    if (legal_coor(row, col + 1) && board_color[row][col + 1]
+                        && is_critical(board, row, col + 1)) {  // right
+                        score = score - (20 - board_num[row][col + 1] * 5);
                     }
+                }
                 else {
-                    if (legal_coor(row - 1, col) && is_critical(board, row - 1, col)) { // up
-                        score = score - 5;
+                    // up
+                    if (legal_coor(row - 1, col) && board_color[row - 1][col] == opponent_color
+                        && is_critical(board, row - 1, col)) {
+                        score = score + (30 - board_num[row - 1][col] * 5);
+                    } 
+                    else if (legal_coor(row - 1, col) && is_critical(board, row - 1, col)) {
+                        score = score + (board_num[row - 1][col] * 2);
                     }
-                    if (legal_coor(row + 1, col) && is_critical(board, row + 1, col)){ // down
-                        score = score - 5;
+                    // down
+                    if (legal_coor(row + 1, col) && board_color[row + 1][col] == opponent_color
+                        && is_critical(board, row + 1, col)) {
+                        score = score + (30 - board_num[row + 1][col] * 5);
+                    } 
+                    else if (legal_coor(row + 1, col) && is_critical(board, row + 1, col)) {
+                        score = score + (board_num[row + 1][col] * 2);
                     }
-                    if (legal_coor(row, col - 1) && is_critical(board, row, col - 1)){  // left
-                        score = score - 5;
+                    // left
+                    if (legal_coor(row, col - 1) && board_color[row][col - 1] == opponent_color
+                        && is_critical(board, row, col - 1)) {
+                        score = score + (30 - board_num[row][col - 1] * 5);
+                    } 
+                    else if (legal_coor(row, col - 1) && is_critical(board, row, col - 1)) {
+                        score = score + (board_num[row][col - 1] * 2);
                     }
-                    if (legal_coor(row, col + 1) && is_critical(board, row, col + 1)){  // right
-                        score = score - 5;
+                    // right
+                    if (legal_coor(row, col + 1) && board_color[row][col + 1] == opponent_color
+                        && is_critical(board, row, col + 1)) {
+                        score = score + (30 - board_num[row][col + 1] * 5);
+                    } 
+                    else if (legal_coor(row, col + 1) && is_critical(board, row, col + 1)) {
+                        score = score + (board_num[row][col + 1] * 2);
                     }
                 }
             }
@@ -109,20 +137,4 @@ void algorithm_A(Board board, Player player, int index[]){
             
     index[0] = best_move_row;
     index[1] = best_move_col;
-    /*
-    //////////// Random Algorithm ////////////
-    // Here is the random algorithm for your reference, you can delete or comment it.
-    srand(time(NULL));
-    int row, col;
-    int color = player.get_color();
-    
-    while(1){
-        row = rand() % 5;
-        col = rand() % 6;
-        if(board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
-    }
-    
-    index[0] = row;
-    index[1] = col;
-    */
 }
